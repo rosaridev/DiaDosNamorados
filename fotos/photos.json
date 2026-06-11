@@ -1,0 +1,69 @@
+{
+  "inicio": [
+    "inicio/414.JPG",
+    "inicio/416.JPG",
+    "inicio/435.JPG",
+    "inicio/444.JPG",
+    "inicio/447.JPG",
+    "inicio/449.JPG",
+    "inicio/1747.JPG",
+    "inicio/1748.JPG",
+    "inicio/1752.JPG",
+    "inicio/1917.JPG"
+  ],
+  "meio": [
+    "meio/IMG-20170119-WA0051.jpg",
+    "meio/196571.jpg",
+    "meio/1470.JPG",
+    "meio/1538.JPG",
+    "meio/2957.HEIC.jpg",
+    "meio/IMG_7619.HEIC.jpg",
+    "meio/1000081168.JPG",
+    "meio/1000084305.JPG"
+  ],
+  "casamento": [
+    "casamento/Casamento JeK quero destque nessa.jpg",
+    "casamento/Casamento JeK (200).jpg",
+    "casamento/Casamento JeK (302).jpg",
+    "casamento/Casamento JeK (303).jpg"
+  ],
+  "especiais": [
+    "especiais/pedido de noivado.JPG",
+    "especiais/pedido de noivado2.JPG",
+    "especiais/antes do casamento.JPG",
+    "especiais/foto antes do casamento.JPG",
+    "especiais/9b153c69-256f-4e81-80d0-d76da7bf958f.JPG",
+    "especiais/da18d6d2-ec59-4215-ad6e-b022853a25f9.JPG",
+    "especiais/IMG_2723.jpg",
+    "especiais/IMG_1527.HEIC.jpg",
+    "especiais/IMG_5806.HEIC.jpg"
+  ],
+  "viagens": {
+    "Fortaleza": [
+      "viagens/fortaleza/IMG_1582.HEIC.jpg",
+      "viagens/fortaleza/IMG_1623.HEIC.jpg",
+      "viagens/fortaleza/IMG_1691.HEIC.jpg",
+      "viagens/fortaleza/IMG_1852.jpg",
+      "viagens/fortaleza/IMG_1971.jpg",
+      "viagens/fortaleza/IMG_2038.jpg",
+      "viagens/fortaleza/IMG_2063.jpg",
+      "viagens/fortaleza/IMG_2206.jpg",
+      "viagens/fortaleza/IMG_2301.jpg",
+      "viagens/fortaleza/IMG_2312.jpg"
+    ],
+    "Salvaterra": [
+      "viagens/salvaterra/IMG_8056.HEIC.jpg",
+      "viagens/salvaterra/IMG_8123.HEIC.jpg",
+      "viagens/salvaterra/IMG_8173.JPG",
+      "viagens/salvaterra/IMG_8275.HEIC.jpg"
+    ],
+    "Ilha do Cumbu": [
+      "viagens/ilha do cumbu /IMG_4974.jpg",
+      "viagens/ilha do cumbu /IMG_4983.jpg",
+      "viagens/ilha do cumbu /IMG_5088.jpg"
+    ],
+    "Bragança": [
+      "viagens/bragança/IMG_4243.jpg"
+    ]
+  }
+}
