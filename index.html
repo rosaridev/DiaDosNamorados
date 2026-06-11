@@ -244,6 +244,10 @@
       transition: transform .3s;
     }
     .photo-card:hover { transform: scale(1.03); }
+    .photo-card.featured {
+      grid-column: 1 / -1;
+      aspect-ratio: 16/9;
+    }
     .photo-card img {
       width: 100%; height: 100%;
       object-fit: cover;
@@ -730,7 +734,7 @@
     <div class="cinema-big-card">
       <div class="cb-icon">🧙</div>
       <div class="cb-label">Maratonas em casa</div>
-      <div class="cb-value">Séries completas assistidas</div>
+      <div class="cb-value">Filmes assistidos juntos</div>
       <div class="marathon-list">
         <div class="marathon-item">
           <span class="m-icon">⚡</span>
@@ -748,6 +752,38 @@
           </div>
           <span class="m-check">✅</span>
         </div>
+        <div class="marathon-item">
+          <span class="m-icon">👠</span>
+          <div>
+            <strong>O Diabo Veste Prada</strong>
+            <small>Clássico inesquecível</small>
+          </div>
+          <span class="m-check">✅</span>
+        </div>
+        <div class="marathon-item">
+          <span class="m-icon">🚀</span>
+          <div>
+            <strong>A Odisseia</strong>
+            <small>Uma aventura épica</small>
+          </div>
+          <span class="m-check">✅</span>
+        </div>
+        <div class="marathon-item">
+          <span class="m-icon">🩷</span>
+          <div>
+            <strong>Barbie</strong>
+            <small>Hi Barbie! 😄</small>
+          </div>
+          <span class="m-check">✅</span>
+        </div>
+        <div class="marathon-item">
+          <span class="m-icon">💣</span>
+          <div>
+            <strong>Oppenheimer</strong>
+            <small>3 horas que valeram a pena</small>
+          </div>
+          <span class="m-check">✅</span>
+        </div>
         <div class="marathon-item horror-item">
           <span class="m-icon">👻</span>
           <div>
@@ -756,6 +792,17 @@
           </div>
           <span class="m-check">❌</span>
         </div>
+      </div>
+    </div>
+
+    <div class="cinema-big-card">
+      <div class="cb-icon">📺</div>
+      <div class="cb-label">Série favorita</div>
+      <div class="cb-value">Friends</div>
+      <div class="cb-desc">Nossa série do coração — assistimos juntos e rimos muito com cada episódio. Could we BE any more in love? ☕</div>
+      <div class="mcu-badges">
+        <span>Ross & Rachel</span><span>Chandler & Monica</span><span>Joey</span>
+        <span>Phoebe</span><span>Central Perk ☕</span><span>10 temporadas</span>
       </div>
     </div>
 
@@ -1087,7 +1134,18 @@
     .then(data => {
       fillGrid('gridInicio', data.inicio, i => ['O começo de tudo 💘','Primeiros momentos ✨','Sorrisos de quem se apaixonou 😊','Felicidade no olhar 🌟','Juntos desde o início ❤️','Pertinho um do outro 💕','Nosso começo 🌹','Olhos nos olhos 👀','Lindos juntos 😍','Tudo começou aqui 💫'][i] || '2016 ❤️');
       fillGrid('gridMeio', data.meio, i => ['Crescendo juntos ❤️','Cada dia mais apaixonados 💑','Nosso amor evoluindo ✨','Anos de cumplicidade 🌟','Juntos em tudo 💪','Parceiros de vida 🌹','Mais fortes cada dia 💕','Nossa história continua 💫'][i] || 'Juntos ❤️');
-      fillGrid('gridCasamento', data.casamento, i => i === 0 ? 'O grande dia 💍✨' : ['Amor eterno 💍','Para sempre juntos 🥂','O sim mais bonito 💒'][i-1] || 'Casamento 💍');
+      (function() {
+        const grid = document.getElementById('gridCasamento');
+        if (!grid || !data.casamento) return;
+        grid.innerHTML = '';
+        grid.className = 'photos-grid';
+        const captions = ['O grande dia 💍✨','Amor eterno 💍','Para sempre juntos 🥂','O sim mais bonito 💒'];
+        data.casamento.forEach((p, i) => {
+          const card = makePhotoCard(p, captions[i] || 'Casamento 💍');
+          if (i === 0) card.classList.add('featured');
+          grid.appendChild(card);
+        });
+      })();
       fillGrid('gridEspeciais', data.especiais, i => ['Pedido de noivado 💍','Sim, aceito! 💍','Antes do grande dia ✨','Prontos para casar 👰🤵','Momento especial 🌟','Memória inesquecível 💕','Juntos sempre 🌹','Felicidade pura 😍','Amor em foto 💫'][i] || 'Momento especial ✨');
 
       // Viagens — subpastas por destino
