@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kaio & Jennifer ❤️</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --pink: #ff4e8e;
+      --rose: #ff2d6b;
+      --gold: #f5c518;
+      --cream: #fff8f0;
+      --dark: #1a0a14;
+      --purple: #6b2d5e;
+    }
+
+    html { scroll-behavior: smooth; }
+    /* snap apenas nas seções pequenas, não nos álbuns com muitas fotos */
+    #hero, #counter, #stats, #final { scroll-snap-align: start; }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--dark);
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* ── MUSIC PLAYER ── */
+    #music-player {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 50px;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: all .3s;
+    }
+    #music-player:hover { background: rgba(255,255,255,0.18); }
+    #music-player .disc {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      animation: spin 4s linear infinite paused;
+    }
+    #music-player.playing .disc { animation-play-state: running; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .music-info { display: flex; flex-direction: column; gap: 1px; }
+    #music-label { font-size: 12px; font-weight: 600; letter-spacing: .3px; max-width: 160px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    /* ── SECTIONS ── */
+    .slide {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      scroll-snap-align: start;
+      padding: 60px 24px;
+      position: relative;
+      overflow: hidden;
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity .8s ease, transform .8s ease;
+    }
+    .slide.visible { opacity: 1; transform: translateY(0); }
+
+    /* ── HERO ── */
+    #hero {
+      background: radial-gradient(ellipse at 50% 60%, #3d0a2e 0%, #1a0a14 70%);
+      text-align: center;
+    }
+    #hero .hearts-bg {
+      position: absolute; inset: 0; pointer-events: none;
+      overflow: hidden;
+    }
+    .floating-heart {
+      position: absolute;
+      font-size: 2rem;
+      opacity: 0;
+      animation: floatUp 6s ease-in infinite;
+    }
+    @keyframes floatUp {
+      0%   { opacity: 0; transform: translateY(0) scale(.8); }
+      10%  { opacity: .6; }
+      90%  { opacity: .2; }
+      100% { opacity: 0; transform: translateY(-110vh) scale(1.2); }
+    }
+    #hero .year-badge {
+      display: inline-block;
+      background: var(--pink);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      padding: 6px 18px;
+      border-radius: 50px;
+      margin-bottom: 24px;
+    }
+    #hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 8vw, 5.5rem);
+      line-height: 1.1;
+      margin-bottom: 16px;
+    }
+    #hero h1 span { color: var(--pink); }
+    #hero .subtitle {
+      font-size: clamp(1rem, 3vw, 1.4rem);
+      opacity: .75;
+      font-style: italic;
+      margin-bottom: 40px;
+    }
+    .scroll-hint {
+      font-size: 13px;
+      opacity: .5;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      animation: bounce 2s infinite;
+    }
+    @keyframes bounce {
+      0%,100% { transform: translateY(0); }
+      50%      { transform: translateY(8px); }
+    }
+
+    /* ── COUNTER ── */
+    #counter {
+      background: linear-gradient(160deg, #2d0a2a 0%, #1a0a14 100%);
+      text-align: center;
+    }
+    #counter .big-number {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(5rem, 18vw, 13rem);
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--pink), var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1;
+      margin-bottom: 12px;
+    }
+    #counter .label {
+      font-size: clamp(1.1rem, 3vw, 1.6rem);
+      opacity: .8;
+      letter-spacing: 1px;
+    }
+    #counter .sub {
+      margin-top: 24px;
+      font-size: 1rem;
+      opacity: .55;
+    }
+
+    /* ── TIMELINE ── */
+    #timeline {
+      background: linear-gradient(160deg, #1a0a14 0%, #2a0d25 100%);
+      width: 100%;
+    }
+    #timeline h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      text-align: center;
+      margin-bottom: 48px;
+    }
+    #timeline h2 span { color: var(--pink); }
+    .timeline-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+      max-width: 640px;
+      width: 100%;
+      margin: 0 auto;
+      position: relative;
+    }
+    .timeline-list::before {
+      content: '';
+      position: absolute;
+      left: 20px;
+      top: 0; bottom: 0;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--pink), var(--purple));
+    }
+    .tl-item {
+      display: flex;
+      gap: 24px;
+      padding: 0 0 36px 0;
+      opacity: 0;
+      transform: translateX(-30px);
+      transition: all .6s ease;
+    }
+    .tl-item.visible { opacity: 1; transform: translateX(0); }
+    .tl-dot {
+      width: 42px; height: 42px; flex-shrink: 0;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      box-shadow: 0 0 0 4px rgba(255,78,142,.2);
+      z-index: 1;
+    }
+    .tl-content { padding-top: 6px; }
+    .tl-date { font-size: 12px; font-weight: 600; color: var(--pink); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+    .tl-title { font-family: 'Playfair Display', serif; font-size: 1.25rem; margin-bottom: 4px; }
+    .tl-desc { font-size: .9rem; opacity: .65; line-height: 1.5; }
+
+    /* ── PHOTOS ── */
+    #photos {
+      background: linear-gradient(160deg, #2a0d25 0%, #1a0a14 100%);
+      width: 100%;
+    }
+    #photos h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    #photos h2 span { color: var(--pink); }
+    .photos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 16px;
+      max-width: 900px;
+      width: 100%;
+    }
+    .photo-card {
+      border-radius: 16px;
+      overflow: hidden;
+      aspect-ratio: 1;
+      background: rgba(255,255,255,.05);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem;
+      position: relative;
+      cursor: pointer;
+      transition: transform .3s;
+    }
+    .photo-card:hover { transform: scale(1.03); }
+    .photo-card img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .photo-card .caption {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      background: linear-gradient(to top, rgba(0,0,0,.7) 0%, transparent 100%);
+      padding: 20px 12px 12px;
+      font-size: .8rem;
+      opacity: 0;
+      transition: opacity .3s;
+    }
+    .photo-card:hover .caption { opacity: 1; }
+
+    /* ── STATS ── */
+    #stats {
+      background: linear-gradient(160deg, #1a0a14 0%, #2d0a2e 100%);
+      width: 100%;
+      text-align: center;
+    }
+    #stats h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 5vw, 3rem);
+      margin-bottom: 48px;
+    }
+    #stats h2 span { color: var(--pink); }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+      max-width: 800px;
+      width: 100%;
+    }
+    .stat-card {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,78,142,.2);
+      border-radius: 20px;
+      padding: 28px 20px;
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all .5s ease;
+    }
+    .stat-card.visible { opacity: 1; transform: translateY(0); }
+    .stat-card .stat-icon { font-size: 2.4rem; margin-bottom: 12px; }
+    .stat-card .stat-value {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.4rem;
+      font-weight: 700;
+      color: var(--pink);
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-card .stat-label { font-size: .85rem; opacity: .65; }
+
+    /* ── FINAL ── */
+    #final {
+      background: radial-gradient(ellipse at 50% 40%, #4a1040 0%, #1a0a14 70%);
+      text-align: center;
+    }
+    #final .big-heart {
+      font-size: 6rem;
+      animation: heartbeat 1.4s ease-in-out infinite;
+      display: block;
+      margin-bottom: 24px;
+    }
+    @keyframes heartbeat {
+      0%,100% { transform: scale(1); }
+      14%      { transform: scale(1.2); }
+      28%      { transform: scale(1); }
+      42%      { transform: scale(1.15); }
+    }
+    #final h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 6vw, 4rem);
+      margin-bottom: 20px;
+    }
+    #final h2 span { color: var(--pink); }
+    #final p {
+      font-size: clamp(.95rem, 2.5vw, 1.2rem);
+      opacity: .75;
+      max-width: 500px;
+      line-height: 1.7;
+      font-style: italic;
+    }
+
+    /* ── ÁLBUNS ── */
+    .album-slide {
+      background: linear-gradient(160deg, #1a0a14 0%, #2a0d25 100%);
+      width: 100%;
+      min-height: auto;
+      padding: 60px 24px;
+    }
+    .album-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 36px;
+      max-width: 900px;
+      width: 100%;
+    }
+    .album-emoji {
+      font-size: 3.5rem;
+      flex-shrink: 0;
+      filter: drop-shadow(0 0 16px rgba(255,78,142,.5));
+    }
+    .album-tag {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--pink);
+      margin-bottom: 6px;
+    }
+    .album-slide h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.6rem, 4vw, 2.6rem);
+      margin-bottom: 4px;
+    }
+    .album-slide h2 span { color: var(--pink); }
+    .album-sub { font-size: .9rem; opacity: .55; font-style: italic; }
+    .empty-card {
+      flex-direction: column;
+      gap: 8px;
+      opacity: .3;
+      cursor: default !important;
+    }
+    .empty-card:hover { transform: none !important; }
+    .empty-card span { font-size: 2.5rem; }
+    .empty-card small { font-size: .7rem; font-family: monospace; }
+
+    .viagem-section { margin-bottom: 36px; width: 100%; }
+    .viagem-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      margin-bottom: 14px;
+      padding-left: 4px;
+      border-left: 3px solid var(--pink);
+      padding-left: 12px;
+    }
+
+    /* ── CINEMA ── */
+    #cinema {
+      background: linear-gradient(160deg, #0d0a1a 0%, #1a0a2e 100%);
+      width: 100%;
+      min-height: auto;
+      padding: 60px 24px;
+      gap: 32px;
+    }
+    .cinema-title { text-align: center; }
+    .cinema-icon { font-size: 3.5rem; margin-bottom: 8px; filter: drop-shadow(0 0 20px rgba(255,200,50,.4)); }
+    #cinema h2 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem,5vw,3rem); }
+    #cinema h2 span { color: #f5c518; }
+    .cinema-sub { font-size: .95rem; opacity: .55; font-style: italic; margin-top: 6px; }
+
+    .cinema-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      max-width: 860px;
+      width: 100%;
+    }
+    .cinema-big-card {
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(245,197,24,.2);
+      border-radius: 20px;
+      padding: 24px;
+    }
+    .cb-icon { font-size: 2.4rem; margin-bottom: 10px; }
+    .cb-label { font-size: .75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #f5c518; margin-bottom: 4px; }
+    .cb-value { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 8px; }
+    .cb-desc { font-size: .85rem; opacity: .6; line-height: 1.5; margin-bottom: 14px; }
+    .mcu-badges { display: flex; flex-wrap: wrap; gap: 6px; }
+    .mcu-badges span {
+      background: rgba(245,197,24,.15);
+      border: 1px solid rgba(245,197,24,.3);
+      border-radius: 20px;
+      padding: 3px 10px;
+      font-size: .75rem;
+      color: #f5c518;
+    }
+    .marathon-list { display: flex; flex-direction: column; gap: 12px; }
+    .marathon-item {
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(255,255,255,.04);
+      border-radius: 12px;
+      padding: 10px 14px;
+    }
+    .horror-item { opacity: .5; }
+    .m-icon { font-size: 1.4rem; flex-shrink: 0; }
+    .marathon-item div { flex: 1; }
+    .marathon-item strong { display: block; font-size: .95rem; }
+    .marathon-item small { font-size: .78rem; opacity: .6; }
+    .m-check { font-size: 1.1rem; }
+
+    .cinema-frequency {
+      max-width: 860px;
+      width: 100%;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(245,197,24,.15);
+      border-radius: 20px;
+      padding: 24px;
+      text-align: center;
+    }
+    .freq-title { font-size: .8rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #f5c518; margin-bottom: 16px; }
+    .months-grid { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-bottom: 14px; }
+    .month-item {
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      background: rgba(255,255,255,.06);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: .8rem;
+      font-weight: 600;
+      min-width: 48px;
+      border: 1px solid transparent;
+      transition: transform .2s;
+    }
+    .month-item:hover { transform: scale(1.1); }
+    .month-item.active { border-color: rgba(245,197,24,.4); background: rgba(245,197,24,.08); }
+    .month-item.quiet { opacity: .4; }
+    .month-item span { font-size: 1rem; }
+    .freq-note { font-size: .85rem; opacity: .55; font-style: italic; }
+
+    /* ── LIGHTBOX ── */
+    #lightbox {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.9);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 2000;
+      cursor: pointer;
+    }
+    #lightbox.open { display: flex; }
+    #lightbox img {
+      max-width: 90vw;
+      max-height: 90vh;
+      border-radius: 12px;
+      object-fit: contain;
+    }
+
+    /* ── PARTICLES ── */
+    #particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+  </style>
+</head>
+<body>
+
+<!-- Floating particles canvas -->
+<canvas id="particles"></canvas>
+
+<!-- Music player -->
+<div id="music-player" onclick="toggleMusic()">
+  <div class="disc">🎵</div>
+  <div class="music-info">
+    <span id="music-label">Carregando...</span>
+  </div>
+</div>
+
+<!-- YouTube player escondido -->
+<div id="yt-player-wrap" style="position:fixed;left:-9999px;top:-9999px;width:1px;height:1px;overflow:hidden;">
+  <div id="yt-player"></div>
+</div>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--  SLIDE 1 — HERO                            -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="slide" id="hero">
+  <div class="hearts-bg" id="heartsContainer"></div>
+  <div class="year-badge">Desde Agosto de 2016</div>
+  <h1>Kaio <span>&</span><br>Jennifer</h1>
+  <p class="subtitle">Uma história escrita com amor ❤️</p>
+  <p class="scroll-hint">↓ Role para ver ↓</p>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--  SLIDE 2 — CONTADOR                        -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="slide" id="counter">
+  <div class="big-number" id="dayCount">0</div>
+  <p class="label">dias juntos</p>
+  <p class="sub">e cada um deles valeu a pena 🌹</p>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--  SLIDE 3 — LINHA DO TEMPO                  -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="slide" id="timeline">
+  <h2>Nossa <span>história</span></h2>
+  <div class="timeline-list" id="timelineList">
+
+    <div class="tl-item">
+      <div class="tl-dot">💘</div>
+      <div class="tl-content">
+        <div class="tl-date">Agosto de 2016</div>
+        <div class="tl-title">O começo de tudo</div>
+        <div class="tl-desc">Dois corações que se encontraram e nunca mais se separaram. O início de uma história linda.</div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot">📚</div>
+      <div class="tl-content">
+        <div class="tl-date">2016 – 2018</div>
+        <div class="tl-title">Estudando juntos</div>
+        <div class="tl-desc">Anos de escola juntos — aprendendo muito, mas o mais importante foi aprender a se amar.</div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot">🎓</div>
+      <div class="tl-content">
+        <div class="tl-date">2019</div>
+        <div class="tl-title">Jennifer entra na faculdade</div>
+        <div class="tl-desc">Um novo capítulo começa — ela foi em frente com tudo, e ele estava lá torcendo a cada passo.</div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot">🎓</div>
+      <div class="tl-content">
+        <div class="tl-date">2021</div>
+        <div class="tl-title">Kaio entra na faculdade</div>
+        <div class="tl-desc">Agora os dois na faculdade — parceiros em tudo, inclusive nos sonhos e na vida acadêmica.</div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot">💍</div>
+      <div class="tl-content">
+        <div class="tl-date">Final de 2023</div>
+        <div class="tl-title">Pedido de noivado</div>
+        <div class="tl-desc">Ele perguntou, ela disse sim. O momento em que dois namorados se tornaram noivos — e o coração acelerou.</div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot">🏛️</div>
+      <div class="tl-content">
+        <div class="tl-date">Maio de 2024</div>
+        <div class="tl-title">Casamento no civil</div>
+        <div class="tl-desc">Na lei e no coração — oficialmente marido e mulher. O começo de uma nova vida juntos.</div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot">🎓</div>
+      <div class="tl-content">
+        <div class="tl-date">2024</div>
+        <div class="tl-title">Os dois se formam</div>
+        <div class="tl-desc">Diplomas na mão e um ao lado do outro — formados, casados e prontos para o mundo. Que conquista!</div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot">💒</div>
+      <div class="tl-content">
+        <div class="tl-date">Julho de 2025</div>
+        <div class="tl-title">Casamento religioso 🎊</div>
+        <div class="tl-desc">A celebração perfeita — rodeados de quem amam, de Deus e de muito amor. O dia mais bonito da vida de vocês.</div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot">✈️</div>
+      <div class="tl-content">
+        <div class="tl-date">Julho de 2025</div>
+        <div class="tl-title">Primeira viagem para outro estado</div>
+        <div class="tl-desc">A primeira grande aventura juntos pelo Brasil — o mundo ficou maior e mais bonito com ela ao lado.</div>
+      </div>
+    </div>
+
+    <div class="tl-item">
+      <div class="tl-dot">📖</div>
+      <div class="tl-content">
+        <div class="tl-date">Hoje e sempre</div>
+        <div class="tl-title">A história continua…</div>
+        <div class="tl-desc">O resto ainda está sendo escrito — página por página, dia por dia, de mãos dadas. ❤️</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--  ÁLBUM 1 — INÍCIO DO NAMORO               -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="slide album-slide" id="album-inicio">
+  <div class="album-header">
+    <div class="album-emoji">💘</div>
+    <div>
+      <div class="album-tag">Agosto de 2016</div>
+      <h2>Início do <span>Namoro</span></h2>
+      <p class="album-sub">Quando tudo começou…</p>
+    </div>
+  </div>
+  <div class="photos-grid" id="gridInicio"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--  ÁLBUM 2 — MEIO DO RELACIONAMENTO         -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="slide album-slide" id="album-meio">
+  <div class="album-header">
+    <div class="album-emoji">❤️</div>
+    <div>
+      <div class="album-tag">Os anos juntos</div>
+      <h2>Crescendo <span>juntos</span></h2>
+      <p class="album-sub">Cada dia mais apaixonados</p>
+    </div>
+  </div>
+  <div class="photos-grid" id="gridMeio"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--  ÁLBUM 3 — VIAGENS                        -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="slide album-slide" id="album-viagens">
+  <div class="album-header">
+    <div class="album-emoji">✈️</div>
+    <div>
+      <div class="album-tag">Aventuras</div>
+      <h2>Nossas <span>viagens</span></h2>
+      <p class="album-sub">O mundo é mais bonito ao seu lado</p>
+    </div>
+  </div>
+  <div id="gridViagens" style="width:100%;max-width:900px;"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--  ÁLBUM 4 — MOMENTOS ESPECIAIS             -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="slide album-slide" id="album-especiais">
+  <div class="album-header">
+    <div class="album-emoji">✨</div>
+    <div>
+      <div class="album-tag">Dias inesquecíveis</div>
+      <h2>Momentos <span>especiais</span></h2>
+      <p class="album-sub">Os dias que guardamos no coração</p>
+    </div>
+  </div>
+  <div class="photos-grid" id="gridEspeciais"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--  ÁLBUM 5 — CASAMENTO                      -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="slide album-slide" id="album-casamento">
+  <div class="album-header">
+    <div class="album-emoji">💍</div>
+    <div>
+      <div class="album-tag">Para sempre</div>
+      <h2>Nosso <span>casamento</span></h2>
+      <p class="album-sub">O dia mais especial das nossas vidas</p>
+    </div>
+  </div>
+  <div class="photos-grid" id="gridCasamento"></div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--  SLIDE CINEMA                              -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="slide" id="cinema">
+  <div class="cinema-title">
+    <div class="cinema-icon">🎬</div>
+    <h2>Nosso <span>cinema</span></h2>
+    <p class="cinema-sub">Porque o melhor filme é ao seu lado</p>
+  </div>
+
+  <div class="cinema-stats">
+
+    <div class="cinema-big-card">
+      <div class="cb-icon">🦸</div>
+      <div class="cb-label">Universo Marvel (MCU)</div>
+      <div class="cb-value">De 2017 até hoje</div>
+      <div class="cb-desc">Assistimos quase todos juntos — do cinema à maratona em casa ✨</div>
+      <div class="mcu-badges">
+        <span>Vingadores</span><span>Homem-Aranha</span><span>Thor</span>
+        <span>Pantera Negra</span><span>Guardiões</span><span>Dr. Estranho</span>
+        <span>Capitã Marvel</span><span>Shang-Chi</span><span>e muito mais…</span>
+      </div>
+    </div>
+
+    <div class="cinema-big-card">
+      <div class="cb-icon">🧙</div>
+      <div class="cb-label">Maratonas em casa</div>
+      <div class="cb-value">Séries completas assistidas</div>
+      <div class="marathon-list">
+        <div class="marathon-item">
+          <span class="m-icon">⚡</span>
+          <div>
+            <strong>Harry Potter</strong>
+            <small>8 filmes — do começo ao fim</small>
+          </div>
+          <span class="m-check">✅</span>
+        </div>
+        <div class="marathon-item">
+          <span class="m-icon">💍</span>
+          <div>
+            <strong>Senhor dos Anéis</strong>
+            <small>A trilogia épica completa</small>
+          </div>
+          <span class="m-check">✅</span>
+        </div>
+        <div class="marathon-item horror-item">
+          <span class="m-icon">👻</span>
+          <div>
+            <strong>Terror</strong>
+            <small>Absolutamente não 😂</small>
+          </div>
+          <span class="m-check">❌</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="cinema-frequency">
+    <div class="freq-title">📅 Frequência no cinema</div>
+    <div class="months-grid">
+      <div class="month-item active" title="Janeiro">Jan<span>🎬</span></div>
+      <div class="month-item active" title="Fevereiro">Fev<span>🎬</span></div>
+      <div class="month-item active" title="Março">Mar<span>🎬</span></div>
+      <div class="month-item quiet" title="Abril — poucos filmes">Abr<span>😴</span></div>
+      <div class="month-item quiet" title="Maio — poucos filmes">Mai<span>😴</span></div>
+      <div class="month-item active" title="Junho">Jun<span>🎬</span></div>
+      <div class="month-item active" title="Julho">Jul<span>🎬</span></div>
+      <div class="month-item active" title="Agosto">Ago<span>🎬</span></div>
+      <div class="month-item active" title="Setembro">Set<span>🎬</span></div>
+      <div class="month-item active" title="Outubro">Out<span>🎬</span></div>
+      <div class="month-item active" title="Novembro">Nov<span>🎬</span></div>
+      <div class="month-item active" title="Dezembro">Dez<span>🎬</span></div>
+    </div>
+    <p class="freq-note">1 a 2 vezes por mês · quase todo mês desde 2017 🍿</p>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--  SLIDE 5 — ESTATÍSTICAS                    -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="slide" id="stats">
+  <h2>Nossos <span>números</span></h2>
+  <div class="stats-grid">
+    <div class="stat-card">
+      <div class="stat-icon">📅</div>
+      <div class="stat-value" id="stat-anos">9</div>
+      <div class="stat-label">Anos juntos</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">☀️</div>
+      <div class="stat-value" id="stat-dias">0</div>
+      <div class="stat-label">Dias de amor</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">💋</div>
+      <div class="stat-value">∞</div>
+      <div class="stat-label">Beijos e abraços</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🌙</div>
+      <div class="stat-value" id="stat-noites">0</div>
+      <div class="stat-label">Noites ao seu lado</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">❤️</div>
+      <div class="stat-value">100%</div>
+      <div class="stat-label">Do meu coração</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">🎓</div>
+      <div class="stat-value">2</div>
+      <div class="stat-label">Formados juntos</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">💍</div>
+      <div class="stat-value">1</div>
+      <div class="stat-label">Casamento lindo</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-icon">✈️</div>
+      <div class="stat-value">4+</div>
+      <div class="stat-label">Destinos visitados</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════ -->
+<!--  SLIDE 6 — FINAL                           -->
+<!-- ═══════════════════════════════════════════ -->
+<section class="slide" id="final">
+  <span class="big-heart">❤️</span>
+  <h2>Para sempre,<br><span>Jennifer</span></h2>
+  <p>Cada dia ao seu lado é um presente. Obrigado por escolher ficar, por cada sorriso, cada abraço e por ser meu lar.</p>
+</section>
+
+<!-- Lightbox -->
+<div id="lightbox" onclick="closeLightbox()">
+  <img id="lightbox-img" src="" alt="" />
+</div>
+
+<script>
+  // ── DAYS COUNTER ──
+  const start = new Date('2016-08-01');
+  const today = new Date();
+  const diffMs = today - start;
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+
+  function animateCount(el, target, duration = 2000) {
+    let start = 0;
+    const step = target / (duration / 16);
+    const timer = setInterval(() => {
+      start += step;
+      if (start >= target) { el.textContent = target.toLocaleString('pt-BR'); clearInterval(timer); }
+      else el.textContent = Math.floor(start).toLocaleString('pt-BR');
+    }, 16);
+  }
+
+  // ── INTERSECTION OBSERVER ──
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+
+        if (entry.target.id === 'counter') {
+          setTimeout(() => animateCount(document.getElementById('dayCount'), diffDays), 300);
+        }
+        if (entry.target.id === 'stats') {
+          setTimeout(() => {
+            animateCount(document.getElementById('stat-dias'), diffDays, 1500);
+            animateCount(document.getElementById('stat-noites'), diffDays, 1500);
+          }, 200);
+        }
+      }
+    });
+  }, { threshold: 0.05 }); // threshold baixo para seções altas também aparecerem
+
+  document.querySelectorAll('.slide').forEach(s => observer.observe(s));
+
+  // Timeline items observer
+  const tlObserver = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 150);
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('.tl-item').forEach(i => tlObserver.observe(i));
+
+  // Stat cards observer
+  const statObserver = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => {
+      if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 100);
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.stat-card').forEach(c => statObserver.observe(c));
+
+  // ── FLOATING HEARTS ──
+  const container = document.getElementById('heartsContainer');
+  const heartEmojis = ['❤️','💕','💗','💓','💖','💝','🌹','✨'];
+  function spawnHeart() {
+    const h = document.createElement('div');
+    h.className = 'floating-heart';
+    h.textContent = heartEmojis[Math.floor(Math.random() * heartEmojis.length)];
+    h.style.left = Math.random() * 100 + '%';
+    h.style.bottom = '-60px';
+    h.style.fontSize = (1.2 + Math.random() * 2) + 'rem';
+    h.style.animationDuration = (4 + Math.random() * 4) + 's';
+    h.style.animationDelay = (Math.random() * 2) + 's';
+    container.appendChild(h);
+    setTimeout(() => h.remove(), 8000);
+  }
+  setInterval(spawnHeart, 600);
+
+  // ── PARTICLES CANVAS ──
+  const canvas = document.getElementById('particles');
+  const ctx = canvas.getContext('2d');
+  let particles = [];
+  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  resize();
+  window.addEventListener('resize', resize);
+
+  for (let i = 0; i < 60; i++) particles.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: Math.random() * 1.5 + .5,
+    vx: (Math.random() - .5) * .3,
+    vy: (Math.random() - .5) * .3,
+    a: Math.random()
+  });
+
+  function drawParticles() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(255,78,142,${p.a * .4})`;
+      ctx.fill();
+      p.x += p.vx; p.y += p.vy;
+      if (p.x < 0) p.x = canvas.width;
+      if (p.x > canvas.width) p.x = 0;
+      if (p.y < 0) p.y = canvas.height;
+      if (p.y > canvas.height) p.y = 0;
+    });
+    requestAnimationFrame(drawParticles);
+  }
+  drawParticles();
+
+  // ── MUSIC (YouTube API — trilha sonora por seção) ──
+  const playerEl = document.getElementById('music-player');
+  const musicLabel = document.getElementById('music-label');
+  const musicSongName = document.getElementById('music-song-name');
+  let ytPlayer = null;
+  let playing = false;
+  let currentTrackId = null;
+  let muted = false;
+
+  // Mapa: id da seção → { videoId, nome }
+  const SECTION_TRACKS = {
+    'hero':             { id: '3JiMr-HgHJ8', nome: 'Nossa música ❤️' },
+    'counter':          { id: '3JiMr-HgHJ8', nome: 'Nossa música ❤️' },
+    'timeline':         { id: '3JiMr-HgHJ8', nome: 'Nossa música ❤️' },
+    'album-inicio':     { id: '3JiMr-HgHJ8', nome: 'Nossa música ❤️' },
+    'album-meio':       { id: '3JiMr-HgHJ8', nome: 'Nossa música ❤️' },
+    'album-viagens':    { id: '3JiMr-HgHJ8', nome: 'Nossa música ❤️' },
+    'album-especiais':  { id: '3JiMr-HgHJ8', nome: 'Nossa música ❤️' },
+    'album-casamento':  { id: 'u9LH_y159sg', nome: 'Nosso casamento 💒' },
+    'cinema':           { id: '3JiMr-HgHJ8', nome: 'Nossa música ❤️' },
+    'stats':            { id: '3JiMr-HgHJ8', nome: 'Nossa música ❤️' },
+    'final':            { id: 'u9LH_y159sg', nome: 'Para sempre 💕' },
+  };
+
+  function fadeVolume(from, to, cb) {
+    let v = from;
+    const step = from > to ? -3 : 3;
+    const t = setInterval(() => {
+      v += step;
+      if ((step < 0 && v <= to) || (step > 0 && v >= to)) { v = to; clearInterval(t); if (cb) cb(); }
+      try { ytPlayer.setVolume(v); } catch(e) {}
+    }, 40);
+  }
+
+  function switchTrack(videoId, nome) {
+    if (!ytPlayer || currentTrackId === videoId) return;
+    currentTrackId = videoId;
+    musicLabel.textContent = nome;
+    fadeVolume(60, 0, () => {
+      ytPlayer.loadVideoById(videoId);
+      ytPlayer.setVolume(0);
+      setTimeout(() => {
+        ytPlayer.playVideo();
+        fadeVolume(0, 60);
+        playing = true;
+        playerEl.classList.add('playing');
+      }, 400);
+    });
+  }
+
+  // Observer para trocar música por seção
+  const musicObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting && playing) {
+        const id = entry.target.id;
+        const track = SECTION_TRACKS[id];
+        if (track) switchTrack(track.id, track.nome);
+      }
+    });
+  }, { threshold: 0.4 });
+  document.querySelectorAll('.slide, section').forEach(s => {
+    if (SECTION_TRACKS[s.id]) musicObserver.observe(s);
+  });
+
+  // Carrega a API do YouTube
+  const tag = document.createElement('script');
+  tag.src = 'https://www.youtube.com/iframe_api';
+  document.head.appendChild(tag);
+
+  window.onYouTubeIframeAPIReady = function() {
+    ytPlayer = new YT.Player('yt-player', {
+      height: '1', width: '1',
+      videoId: '3JiMr-HgHJ8',
+      playerVars: { autoplay: 0, loop: 1, playlist: '3JiMr-HgHJ8', controls: 0 },
+      events: {
+        onReady: () => {
+          ytPlayer.setVolume(60);
+          currentTrackId = '3JiMr-HgHJ8';
+          musicLabel.textContent = 'Tocar música ▶';
+        },
+        onStateChange: (e) => {
+          if (e.data === YT.PlayerState.ENDED) ytPlayer.playVideo();
+        }
+      }
+    });
+  };
+
+  function toggleMusic() {
+    if (!ytPlayer) return;
+    if (playing) {
+      fadeVolume(60, 0, () => ytPlayer.pauseVideo());
+      playerEl.classList.remove('playing');
+      musicLabel.textContent = 'Tocar música ▶';
+    } else {
+      ytPlayer.playVideo();
+      fadeVolume(0, 60);
+      playerEl.classList.add('playing');
+      musicLabel.textContent = 'Nossa música ❤️';
+    }
+    playing = !playing;
+  }
+
+  // ── PHOTO LIGHTBOX ──
+  function openLightbox(src) {
+    document.getElementById('lightbox-img').src = src;
+    document.getElementById('lightbox').classList.add('open');
+  }
+  function closeLightbox() {
+    document.getElementById('lightbox').classList.remove('open');
+  }
+
+  // ── CARREGAR FOTOS DO JSON ──
+  function makePhotoCard(path, caption) {
+    const src = 'fotos/' + path;
+    const card = document.createElement('div');
+    card.className = 'photo-card';
+    card.onclick = () => openLightbox(src);
+    card.innerHTML = `
+      <img src="${src}" alt="${caption}" loading="lazy"
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+      <div class="placeholder" style="display:none;width:100%;height:100%;align-items:center;justify-content:center;font-size:3rem;">📸</div>
+      <div class="caption">${caption}</div>`;
+    return card;
+  }
+
+  function fillGrid(gridId, photos, captionFn) {
+    const grid = document.getElementById(gridId);
+    if (!grid) return;
+    grid.innerHTML = '';
+    grid.className = 'photos-grid';
+    photos.forEach((p, i) => grid.appendChild(makePhotoCard(p, captionFn(i))));
+  }
+
+  fetch('fotos/photos.json')
+    .then(r => r.json())
+    .then(data => {
+      fillGrid('gridInicio', data.inicio, i => ['O começo de tudo 💘','Primeiros momentos ✨','Sorrisos de quem se apaixonou 😊','Felicidade no olhar 🌟','Juntos desde o início ❤️','Pertinho um do outro 💕','Nosso começo 🌹','Olhos nos olhos 👀','Lindos juntos 😍','Tudo começou aqui 💫'][i] || '2016 ❤️');
+      fillGrid('gridMeio', data.meio, i => ['Crescendo juntos ❤️','Cada dia mais apaixonados 💑','Nosso amor evoluindo ✨','Anos de cumplicidade 🌟','Juntos em tudo 💪','Parceiros de vida 🌹','Mais fortes cada dia 💕','Nossa história continua 💫'][i] || 'Juntos ❤️');
+      fillGrid('gridCasamento', data.casamento, i => i === 0 ? 'O grande dia 💍✨' : ['Amor eterno 💍','Para sempre juntos 🥂','O sim mais bonito 💒'][i-1] || 'Casamento 💍');
+      fillGrid('gridEspeciais', data.especiais, i => ['Pedido de noivado 💍','Sim, aceito! 💍','Antes do grande dia ✨','Prontos para casar 👰🤵','Momento especial 🌟','Memória inesquecível 💕','Juntos sempre 🌹','Felicidade pura 😍','Amor em foto 💫'][i] || 'Momento especial ✨');
+
+      // Viagens — subpastas por destino
+      const vGrid = document.getElementById('gridViagens');
+      if (vGrid && data.viagens) {
+        vGrid.innerHTML = '';
+        const destEmojis = { 'Fortaleza':'🌊', 'Salvaterra':'🌴', 'Ilha do Cumbu':'⛵', 'Bragança':'🏖️' };
+        Object.entries(data.viagens).forEach(([dest, photos]) => {
+          const section = document.createElement('div');
+          section.className = 'viagem-section';
+          section.innerHTML = `<div class="viagem-title">${destEmojis[dest]||'📍'} ${dest}</div>`;
+          const grid = document.createElement('div');
+          grid.className = 'photos-grid';
+          photos.forEach((p, i) => grid.appendChild(makePhotoCard(p, `${dest} ${i+1} ${destEmojis[dest]||'📍'}`)));
+          section.appendChild(grid);
+          vGrid.appendChild(section);
+        });
+      }
+    })
+    .catch(e => console.warn('photos.json não carregado:', e));
+</script>
+</body>
+</html>
